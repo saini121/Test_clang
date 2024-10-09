@@ -1,37 +1,39 @@
-name: Build and Upload Binaries
+name: Build Binary Files
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:  # Allows you to manually trigger the workflow
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
-      - name: Clone Clang Prebuilt Toolchain
-        run: |
-          git clone https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git
-          cd android_prebuilts_clang_host_linux-x86_clang-r487747c
-          git checkout 14.0
+    steps:
+      - name: Checkout Kernel Source
+        uses: actions/checkout@v3
+        with:
+          repository: crdroidandroid/android_kernel_oplus_RMX3461  # Your kernel repository
 
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential libncurses-dev bison flex libssl-dev libelf-dev git
+          sudo apt install -y build-essential clang libncurses-dev bison flex libssl-dev libelf-dev git
 
-      - name: Build Kernel
+      - name: Set up Clang
         run: |
-          cd path/to/your/kernel/source
-          export PATH=$PATH:$(pwd)/path/to/android_prebuilts_clang_host_linux-x86_clang-r487747c/clang/bin
-          make clean && make
+          # Clone the prebuilt Clang toolchain
+          git clone https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git
+          cd android_prebuilts_clang_host_linux-x86_clang-r487747c
+          git checkout 14.0  # Or any version you need
 
-      - name: Upload Binaries
+      - name: Build Binary Files
+        run: |
+          cd android_kernel_oplus_RMX3461
+          # Replace with the actual commands to build the binaries
+          make clean
+          make <target>  # Specify the target binary you want to build
+
+      - name: Upload Binary Files
         uses: actions/upload-artifact@v3
         with:
-          name: kernel-binaries
-          path: |
-            path/to/your/kernel/binaries/*
+          name: binary-files
+          path: ./path/to/binary/files  # Replace with the actual path to your binary files
