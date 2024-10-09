@@ -10,7 +10,9 @@ jobs:
       - name: Checkout GitHub repository
         uses: actions/checkout@v4
 
-      - name: Clone GitLab repository
+      - name: Clone GitLab repository into specific directory
         run: |
-          git clone --branch 14.0 https://gitlab-ci-token:${{ secrets.GITLAB_TOKEN }}@gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git
-          
+          git clone --branch 14.0 https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git ./gitlab-repo
+
+      - name: List directory content
+        run: ls -R
