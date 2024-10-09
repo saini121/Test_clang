@@ -21,10 +21,10 @@ jobs:
 
     - name: Commit and push to GitHub
       env:
-        ACTIONS_TOKEN: ${{ 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 }}
+        ACTIONS_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global saini121 "github-actions[bot]"
+        git config --global ujjwalsinghsaini39@gmail.com "github-actions[bot]@users.noreply.github.com"
         git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_TOKEN }}@github.com/YOUR_USERNAME/android_prebuilts_analysis.git
         git add .
         git commit -m "Cloned and committed from GitLab"
