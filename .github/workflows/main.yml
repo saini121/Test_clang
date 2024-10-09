@@ -1,4 +1,4 @@
-name: Clone GitLab Repo
+name: Clone and Commit GitLab Repo
 
 on:
   workflow_dispatch:
@@ -14,5 +14,13 @@ jobs:
         run: |
           git clone --branch 14.0 https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git ./gitlab-repo
 
-      - name: List directory content
-        run: ls -R
+      - name: Add and commit cloned files
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Add files from GitLab repo"
+
+      - name: Push changes
+        run: git push
+        
