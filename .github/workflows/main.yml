@@ -1,39 +1,36 @@
-name: Build Binary Files
+name: Clone and Analyze
 
 on:
-  workflow_dispatch:  # Allows you to manually trigger the workflow
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  clone-analyze:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Kernel Source
-        uses: actions/checkout@v3
-        with:
-          repository: crdroidandroid/android_kernel_oplus_RMX3461  # Your kernel repository
+    - name: Checkout this repository
+      uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential clang libncurses-dev bison flex libssl-dev libelf-dev git
+    - name: Clone GitLab repository
+      run: |
+        git clone https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git
+        cd android_prebuilts_clang_host_linux-x86_clang-r487747c
+        git checkout 14.0
 
-      - name: Set up Clang
-        run: |
-          # Clone the prebuilt Clang toolchain
-          git clone https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c.git
-          cd android_prebuilts_clang_host_linux-x86_clang-r487747c
-          git checkout 14.0  # Or any version you need
+    - name: Commit and push to GitHub
+      env:
+        ACTIONS_TOKEN: ${{ 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 }}
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git remote set-url origin https://x-access-token:${{ secrets.ACTIONS_TOKEN }}@github.com/YOUR_USERNAME/android_prebuilts_analysis.git
+        git add .
+        git commit -m "Cloned and committed from GitLab"
+        git push origin main
 
-      - name: Build Binary Files
-        run: |
-          cd android_kernel_oplus_RMX3461
-          # Replace with the actual commands to build the binaries
-          make clean
-          make <target>  # Specify the target binary you want to build
-
-      - name: Upload Binary Files
-        uses: actions/upload-artifact@v3
-        with:
-          name: binary-files
-          path: ./path/to/binary/files  # Replace with the actual path to your binary files
+    - name: Run Analysis
+      run: |
+        # Add your analysis commands here
+        echo "Analysis command goes here"
